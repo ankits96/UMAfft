@@ -3,14 +3,11 @@
 # 8 bar Audio equaliser using MCP2307
  
 import alsaaudio as aa
-import smbus
 import time
 from struct import unpack
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy
-from scikits import audiolab
-from matplotlib import animation
 
 
 #bus=smbus.SMBus(0)     #Use '1' for newer Pi boards;
@@ -78,9 +75,9 @@ while True:
       # catch frame error
       #try:
    matrix=calculate_levels(data, chunk,sample_rate)
-   print matrix.shape
+   #print matrix.shape
    matrix[:200] = 0
-   #matrix[1900:]=0
+   matrix[1900:]=0
    matrix2+=matrix
    xaxis = scipy.linspace(0,sample_rate/2, len(data)/4)
    #plt.plot(xaxis,matrix)
@@ -104,6 +101,10 @@ while True:
 #total = sum(matrix2[1300:1350])
 #matrix2[1300:1350] = 0
 #print total/iters
+print iters
+print sum(matrix2)
+#matrix2 /= iters
+print sum(matrix2)
 plt.plot(xaxis, matrix2)
 #plt.xlim(0,20000)
 plt.ylim(500)

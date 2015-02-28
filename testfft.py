@@ -4,6 +4,7 @@
  
 import alsaaudio as aa
 #import smbus
+import subprocess
 from time import sleep
 from struct import unpack
 import numpy as np
@@ -27,6 +28,9 @@ def calculate_levels(data, chunk,sample_rate):
    dB = np.log(np.abs(fourier))
    #print power
    return dB
+
+subprocess.call("arecord -D plughw:0 --duration=5 --channels=1 --rate=44100 output.wav", shell=True)
+
 print "Processing....."   
 data, sample_rate, toss1 = audiolab.wavread('output.wav') #data_in.read()
 #l = len(data)

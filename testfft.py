@@ -11,6 +11,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy
 from scikits import audiolab
+import lcm
+from common import constants
 
 # Set up audio
 sample_rate = 44100
@@ -29,37 +31,47 @@ def calculate_levels(data, chunk,sample_rate):
    #print power
    return dB
 
-subprocess.call("arecord -D plughw:0 --duration=5 --channels=1 --rate=44100 output.wav", shell=True)
 
-print "Processing....."   
-data, sample_rate, toss1 = audiolab.wavread('output.wav') #data_in.read()
-#l = len(data)
-#print data
-#data = np.array_str(data)
-#print type(data)
-#l = len(data)
-#print data
-#print l
-matrix=calculate_levels(data, chunk,sample_rate)
-y = matrix>0
-matrix *= y
-x = scipy.linspace(0,sample_rate/2, len(matrix))
-print x.shape
-print matrix.shape
-matrix[:50000] = 0
-a = .9*np.max(matrix)
-print np.max(matrix)
-print a
-start = 100000
-end = 400000
-total = sum(matrix[start:end])
-#print total
-average = total/(len(matrix[start:end]))
-#print 'average amplitude is', average
-#print sum(matrix>(a))
-print 'peaks at',np.where(matrix>=a)[0] *.2,'hZ'
-   #print matrix
-plt.plot(x,matrix)
-#plt.xlim(0,20000)
-         #plt.ylim(0,10)
-plt.show()
+def run():
+	subprocess.call("arecord -D plughw:0 --duration=5 --channels=1 --rate=44100 output.wav", shell=True)
+
+	print "Processing....."   
+	data, sample_rate, toss1 = audiolab.wavread('output.wav') #data_in.read()
+	#l = len(data)
+	#print data
+	#data = np.array_str(data)
+	#print type(data)
+	#l = len(data)
+	#print data
+	#print l
+	matrix=calculate_levels(data, chunk,sample_rate)
+	y = matrix>0
+	matrix *= y
+	x = scipy.linspace(0,sample_rate/2, len(matrix))
+	# print x.shape
+	# print matrix.shape
+	matrix[:100000] = 0
+	a = .9*np.max(matrix)
+	# print np.max(matrix)
+	# print a
+	# start = 100000
+	# end = 400000
+	# total = sum(matrix[start:end])
+	#print total
+	# average = total/(len(matrix[start:end]))
+	#print 'average amplitude is', average
+	#print sum(matrix>(a))
+	peaks = np.where(matrix>=a)[0]
+	total = sum(matrix[peaks[0]-50:peaks[0]+50])
+	average = total/(len(matrix[peaks[0]-50:peaks[0]+50]))
+	print 'peaks at',np.where(matrix>=a)[0] *.2,'hZ'
+	print 'amplitude at', peaks[0]*.2, 'hZ is', matrix[peaks[0]]
+	#print matrix
+	plt.plot(x,matrix)
+	#plt.xlim(0,20000)
+	#plt.ylim(0,10)
+	plt.show()
+
+
+if __name__ == '__main__':
+	run()

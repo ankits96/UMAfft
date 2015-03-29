@@ -50,7 +50,7 @@ def run():
 		x = scipy.linspace(0,sample_rate/2, len(matrix))
 		# print x.shape
 		# print matrix.shape
-		matrix[:50000] = 0
+		matrix[:100000] = 0
 		a = .9*np.max(matrix)
 		peaks = np.where(matrix>=a)[0]
 		# total = sum(matrix[peaks[0]-50:peaks[0]+50]) FOR AVERAGING
